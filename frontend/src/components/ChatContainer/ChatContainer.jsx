@@ -74,10 +74,11 @@ const ChatContainer = ({ selectedUser }) => {
                 ? { textAlign: "right" }
                 : { textAlign: "left" }
             }
+            title={`${formattedDate} ${formattedTime}`} // Tooltip on hover
           >
-            <time>
+            {/* <time>
               {formattedDate} {formattedTime}
-            </time>
+            </time> */}
             <p>{message.text}</p>
           </div>
         );
