@@ -15,7 +15,8 @@ const getUsersForSidebar = async (req, res) => {
 const getMessages = async (req, res) => {
   try {
     const { id: userToChatId } = req.params;
-    const senderId = req.user_id;
+    console.log(req.auth.id);
+    const senderId = req.auth.id;
     const message = await filteredMessages({
       $or: [
         {
@@ -40,9 +41,8 @@ const sendMessage = async (req, res) => {
     const { text, image } = req.body;
     const { id: receiverId } = req.params;
     const senderId = req.auth.id;
-
     let imageUrl;
-
+    console.log(text);
     if (image) {
       const uploadResponse = await cloudinaryy.uploader.upload(image);
       imageUrl = uploadResponse.secure_url;
