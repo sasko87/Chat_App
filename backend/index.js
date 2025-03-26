@@ -3,8 +3,8 @@ require("dotenv").config();
 require("./pkg/db/db");
 const cors = require("cors");
 const { expressjwt: jwt } = require("express-jwt");
-const { signup, login, logout, checkAuth } = require("./handlers/auth");
-const { updateAccount } = require("./pkg/account/account");
+const { signup, login, logout } = require("./handlers/auth");
+
 const { updateProfile } = require("./handlers/account");
 const {
   getUsersForSidebar,
@@ -28,14 +28,14 @@ app.use(
     secret: process.env.JWT_SECRET,
     algorithms: ["HS256"],
   }).unless({
-    path: ["/api/login", "/api/register", "/api/check"],
+    path: ["/api/login", "/api/register", "/api/signup"],
   })
 );
 app.post("/api/signup", signup);
 app.post("/api/login", login);
 app.post("/api/logout", logout);
 app.put("/api/update-profile", updateProfile);
-app.get("/api/check", checkAuth);
+
 
 app.get("/api/get-users-for-sidebar", getUsersForSidebar);
 app.get("/api/:id", getMessages);

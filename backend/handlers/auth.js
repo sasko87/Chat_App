@@ -25,9 +25,9 @@ const signup = async (req, res) => {
       });
 
       res.cookie("jwt", token, {
-        httpOnly: true,
-        sameSite: "strict",
-        secure: process.env.NODE_ENV !== "development",
+        // httpOnly: true,
+        // sameSite: "strict",
+        // secure: process.env.NODE_ENV !== "development",
       });
     }
 

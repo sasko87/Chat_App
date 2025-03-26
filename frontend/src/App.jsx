@@ -11,11 +11,8 @@ import { useEffect } from "react";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 
 function App() {
-  const { authUser, chechAuth, isChackingAuth } = useAuthStore();
-  useEffect(() => {
-    chechAuth();
-  }, [chechAuth]);
-
+  const { authUser, isChackingAuth } = useAuthStore();
+ 
   console.log({ authUser });
 
   if (isChackingAuth && !authUser) return <p>Checking Authentication</p>;
@@ -25,10 +22,11 @@ function App() {
         <NavBar />
 
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route element={<ProtectedRoutes />}>
+          <Route path="/" element={<HomePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>

@@ -1,14 +1,14 @@
 import React from "react";
 import classes from "./Card.module.css"
-import img from "../../assets/react.svg"
 
-const Card = ()=>{
-    return <div className={classes.card}>
+
+const Card = ({img, fullName, onClick})=>{
+    return <div className={classes.card} onClick={onClick}>
 <div className={classes.profileImageContainer}>
     <img src={img} alt="" />
 </div>
 <div className={classes.profileInfoContainer}>
-<p>Sasko Stevkovski</p>
+<p>{fullName}</p>
 <p>Online</p>
 </div>
     </div>

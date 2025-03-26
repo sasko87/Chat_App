@@ -39,7 +39,7 @@ const sendMessage = async (req, res) => {
   try {
     const { text, image } = req.body;
     const { id: receiverId } = req.params;
-    const senderId = req.user._id;
+    const senderId = req.auth.id;
 
     let imageUrl;
 
