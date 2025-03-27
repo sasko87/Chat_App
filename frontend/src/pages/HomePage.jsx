@@ -5,6 +5,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import ChatContainer from "../components/ChatContainer/ChatContainer";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import Container from "../components/Container/Container";
 
 const HomePage = () => {
   const [users, setUsers] = useState([]);
@@ -33,11 +34,12 @@ const HomePage = () => {
   }, []);
 
   return (
-    <AuthContainer>
+    <Container>
       <Sidebar>
         {users.map((user) => (
           <Card
             key={user._id}
+            img={user.profilePicture}
             fullName={user.fullName}
             onClick={() => setSelectedUser(user)}
           />
@@ -50,7 +52,7 @@ const HomePage = () => {
       ) : (
         <p>Welcome</p>
       )}
-    </AuthContainer>
+    </Container>
   );
 };
 

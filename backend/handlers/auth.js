@@ -48,7 +48,7 @@ const login = async (req, res) => {
     const isPasswordCorrect = bcrypt.compareSync(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).send({ error: "Wrong password" });
+      return res.status(400).send({ message: "Wrong password" });
     }
 
     const payload = {
@@ -61,15 +61,18 @@ const login = async (req, res) => {
 
     res.cookie("jwt", token);
 
-    return res.status(200).send({ message: "Successcfull login. You will be redirected to Homepage" });
+    return res.status(200).send({
+      message: "Successcfull login. You will be redirected to Homepage",
+    });
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ error: "Internal Server Error" });
   }
 };
 const logout = async (req, res) => {
   try {
     res.cookie("jwt", "", {
-      expires: new Date(0)
+      expires: new Date(0),
     });
     res.status(200).send({ message: "Logout successfuly" });
   } catch (error) {

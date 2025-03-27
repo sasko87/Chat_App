@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import classes from "./ChatContainer.module.css";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import Card from "../Card/Card";
 
 const ChatContainer = ({ selectedUser }) => {
   const [messages, setMessages] = useState([]);
@@ -49,53 +50,60 @@ const ChatContainer = ({ selectedUser }) => {
   };
   return (
     <div className={classes.chatContainer}>
-      {messages.map((message) => {
-        const formattedDate = new Date(message.createdAt).toLocaleDateString(
-          "mk-MK",
-          {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          }
-        );
-        const formattedTime = new Date(message.createdAt).toLocaleTimeString(
-          "mk-MK",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false, // Ensures 24-hour format
-          }
-        );
-        return (
-          <div
-            key={message._id}
-            style={
-              message.senderId === user.id
-                ? { textAlign: "right" }
-                : { textAlign: "left" }
+      <div>
+        <Card
+          fullName={selectedUser.fullName}
+          img={selectedUser.profilePicture}
+        />
+      </div>
+      <div className={classes.messageContainer}>
+        {messages.map((message) => {
+          const formattedDate = new Date(message.createdAt).toLocaleDateString(
+            "mk-MK",
+            {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
             }
-            title={`${formattedDate} ${formattedTime}`} // Tooltip on hover
-          >
-            {/* <time>
+          );
+          const formattedTime = new Date(message.createdAt).toLocaleTimeString(
+            "mk-MK",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false, // Ensures 24-hour format
+            }
+          );
+          return (
+            <div
+              key={message._id}
+              className={
+                message.senderId === user.id
+                  ? classes.senderMessage
+                  : classes.receiverMessage
+              }
+              title={`${formattedDate} ${formattedTime}`} // Tooltip on hover
+            >
+              {/* <time>
               {formattedDate} {formattedTime}
             </time> */}
-            <p>{message.text}</p>
-          </div>
-        );
-      })}
+              <p>{message.text}</p>
+            </div>
+          );
+        })}
+      </div>
 
-      <div>
+      <div className={classes.sendMessageContainer}>
         <input
           type="text"
           name="text"
           id="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          style={{ width: "70%", height: "25px", marginTop: "25px" }}
         />
         <button
-          style={{ width: "25%", height: "25px", marginLeft: "20px" }}
           onClick={handleSendMessage}
+          disabled={text === "" ? true : false}
         >
           Send
         </button>
