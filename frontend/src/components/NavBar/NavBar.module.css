@@ -1,0 +1,31 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 7vh;
+    padding: 5px 20px;
+    background-color: #0e1249;;
+    color: #addfd0;
+}
+
+.logoContainer {
+    font-size: 40px;
+}
+
+.navItems {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    
+}
+
+.navLink {
+    text-decoration: none;
+    font-size: 20px;
+    color: #addfd0;
+    
+}
+
+.navLink:hover {
+    color: #8AB2A6;
+}

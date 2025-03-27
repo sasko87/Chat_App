@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AuthContainer from "../components/AuthContainer/AuthContainer";
 import Form from "../components/Form/Form";
 import { axiosInstance } from "../lib/axios";
+import AuthHero from "../AuthHero/AuthHero";
 
 const SignUpPage = () => {
   const [message, setMessage] = useState("");
@@ -31,7 +32,6 @@ const SignUpPage = () => {
      })
      if (res.ok) {
       const data = await res.json()
-      console.log("ok")
       setMessage(data.message)
      }
     } catch (error) {
@@ -40,6 +40,7 @@ const SignUpPage = () => {
   }
 
   return <AuthContainer>
+    <AuthHero />
     <Form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="fullName">Full Name</label>
@@ -52,7 +53,7 @@ const SignUpPage = () => {
         <label htmlFor="password" >Password</label>
         <input type="text" name='password' id='password' value={formData.password} onChange={handleChange} />
       </div>
-      {message && <p>Sucessfull</p>}
+      {message && <p>{message}</p>}
       <button type="submit">Sign Up</button>
     </Form>
   </AuthContainer>

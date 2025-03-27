@@ -59,20 +59,18 @@ const login = async (req, res) => {
       expiresIn: "7d",
     });
 
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV !== "development",
-    });
+    res.cookie("jwt", token);
 
-    return res.status(200).send({ message: "Successcfull login" });
+    return res.status(200).send({ message: "Successcfull login. You will be redirected to Homepage" });
   } catch (error) {
     console.log(error);
   }
 };
 const logout = async (req, res) => {
   try {
-    res.cookie("jwt", "");
+    res.cookie("jwt", "", {
+      expires: new Date(0)
+    });
     res.status(200).send({ message: "Logout successfuly" });
   } catch (error) {
     console.log(error);
