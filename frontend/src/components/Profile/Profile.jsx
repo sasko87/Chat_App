@@ -17,13 +17,16 @@ const Profile = () => {
   const [message, setMessage] = useState();
 
   const fetchUserData = async () => {
-    const res = await fetch("/api/find-account", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      "https://chat-app-server-wine.vercel.app/api/find-account",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     if (res.ok) {
       const data = await res.json();
 
@@ -63,18 +66,21 @@ const Profile = () => {
   const updateProfile = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("/api/update-profile", {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        profilePicture: selectedImage,
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
-      }),
-    });
+    const res = await fetch(
+      "https://chat-app-server-wine.vercel.app/api/update-profile",
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          profilePicture: selectedImage,
+          currentPassword: formData.currentPassword,
+          newPassword: formData.newPassword,
+        }),
+      }
+    );
     const data = await res.json();
     if (res.ok) {
       setMessage(data.message);
