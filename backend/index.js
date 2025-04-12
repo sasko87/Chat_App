@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 require("./pkg/db/db");
-// const cors = require("cors");
+const cors = require("cors");
 const { expressjwt: jwt } = require("express-jwt");
 const { signup, login, logout } = require("./handlers/auth");
 
@@ -14,12 +14,12 @@ const {
 const { app, server } = require("./lib/socket");
 
 app.use(express.json());
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.use(
   "/api",

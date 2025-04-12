@@ -79,7 +79,6 @@ const HomePage = () => {
                 onClick={() => setSelectedUser(user)}
               />
             ))}
-          <Card />
         </Sidebar>
       )}
 
