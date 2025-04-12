@@ -27,7 +27,7 @@ const NavBar = () => {
   }, []);
 
   const handleLogout = async () => {
-    const res = await fetch("/api/logout", {
+    const res = await fetch(`${process.env.FETCH_URL}/api/logout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
