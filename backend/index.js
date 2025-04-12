@@ -40,6 +40,6 @@ app.get("/api/user/:id", getMessages);
 app.post("/api/send/:id", sendMessage);
 app.get("/api/find-account", findAccount);
 
-server.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, () => {
   console.log(`server is up on port ${process.env.PORT}`);
 });
