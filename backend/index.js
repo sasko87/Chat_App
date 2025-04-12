@@ -30,6 +30,7 @@ app.use(
     path: ["/api/login", "/api/register", "/api/signup"],
   })
 );
+
 app.post("/api/signup", signup);
 app.post("/api/login", login);
 app.post("/api/logout", logout);
@@ -39,6 +40,14 @@ app.get("/api/get-users-for-sidebar", getUsersForSidebar);
 app.get("/api/user/:id", getMessages);
 app.post("/api/send/:id", sendMessage);
 app.get("/api/find-account", findAccount);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  });
+}
 
 server.listen(process.env.PORT, () => {
   console.log(`server is up on port ${process.env.PORT}`);
