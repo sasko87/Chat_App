@@ -1,0 +1,59 @@
+.welcomeContainer {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: fit-content;
+  row-gap: 20px;
+  column-gap: 20px;
+  height: fit-content;
+}
+
+.square {
+  height: 100px;
+  width: 100px;
+  background-color: #373850;
+  box-shadow: 1px 1px 1px #272738;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.textContainer {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.textContainer h3 {
+  font-size: 30px;
+  letter-spacing: 1px;
+  color: #addfd0;
+  font-weight: 700;
+}
+
+.textContainer p {
+  font-size: 18px;
+  margin: 15px auto 40px auto;
+  letter-spacing: 1px;
+  color: #addfd0;
+  opacity: 0.5;
+  font-weight: 500;
+}
+
+.welcomeIcon {
+  font-size: 70px;
+  color: #0e1249;
+}
+
+@media screen and (max-width: 992px) {
+  .welcomeContainer {
+    display: none;
+  }
+}

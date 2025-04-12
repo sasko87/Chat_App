@@ -1,31 +1,77 @@
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 7vh;
-    padding: 5px 20px;
-    background-color: #0e1249;;
-    color: #addfd0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 7vh;
+  padding: 5px 20px;
+  background-color: #0e1249;
+  color: #addfd0;
 }
 
 .logoContainer {
-    font-size: 40px;
+  font-size: 40px;
+  cursor: pointer;
 }
 
 .navItems {
-    display: flex;
-    gap: 40px;
-    list-style: none;
-    
+  display: flex;
+  gap: 40px;
+  list-style: none;
 }
 
 .navLink {
-    text-decoration: none;
-    font-size: 20px;
-    color: #addfd0;
-    
+  text-decoration: none;
+  font-size: 20px;
+  color: #addfd0;
 }
 
 .navLink:hover {
-    color: #8AB2A6;
+  color: #8ab2a6;
+}
+
+.hamburgerMenu {
+  display: none;
+  font-size: 30px;
+}
+
+.mobileNav {
+  display: none;
+  position: absolute;
+  height: 150px;
+  width: 200px;
+  top: 7%;
+  right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  z-index: 100;
+}
+
+.mobileNavItems {
+  display: flex;
+  flex-direction: column;
+  height: 150px;
+  width: 200px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  list-style: none;
+}
+
+.mobileNavLink {
+  text-decoration: none;
+  font-size: 20px;
+  color: #addfd0;
+}
+
+@media screen and (max-width: 600px) {
+  .nav {
+    display: none;
+  }
+  .mobileNav {
+    display: block;
+  }
+  .hamburgerMenu {
+    display: block;
+  }
 }

@@ -3,15 +3,18 @@ import classes from "./ChatContainer.module.css";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import Card from "../Card/Card";
+import { io } from "socket.io-client";
+import { useRef } from "react";
 
-const ChatContainer = ({ selectedUser }) => {
+const ChatContainer = ({ selectedUser, onBack }) => {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const token = Cookies.get("jwt");
   const user = jwtDecode(token);
+  const messageRef = useRef(null);
 
   const handleMessages = async () => {
-    const res = await fetch(`/api/${selectedUser._id}`, {
+    const res = await fetch(`/api/user/${selectedUser._id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${Cookies.get("jwt")}`,
@@ -19,13 +22,15 @@ const ChatContainer = ({ selectedUser }) => {
     });
     if (res.ok) {
       const data = await res.json();
-      console.log(data);
       setMessages(data);
     }
   };
 
   useEffect(() => {
     handleMessages();
+    subscribeToMessages();
+
+    return () => unsubscribeFromMessages();
   }, [selectedUser._id]);
 
   const handleSendMessage = async (e) => {
@@ -40,7 +45,6 @@ const ChatContainer = ({ selectedUser }) => {
         body: JSON.stringify({ text }),
       });
       if (res.ok) {
-        console.log(text);
         setText("");
         handleMessages();
       }
@@ -48,8 +52,42 @@ const ChatContainer = ({ selectedUser }) => {
       console.log(error);
     }
   };
+
+  const subscribeToMessages = () => {
+    if (!selectedUser) return;
+    const socket = io("http://localhost:3000", {
+      query: {
+        userId: user.id,
+      },
+    });
+    socket.on("newMessage", (newMessage) => {
+      if (newMessage.senderId !== selectedUser._id) return;
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+  };
+
+  const unsubscribeFromMessages = () => {
+    const socket = io("http://localhost:3000", {
+      query: {
+        userId: user.id,
+      },
+    });
+    socket.off("newMessage");
+  };
+
+  useEffect(() => {
+    messageRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   return (
     <div className={classes.chatContainer}>
+      {window.innerWidth < 470 && (
+        <button
+          onClick={() => onBack()} // or use a prop callback to clear selectedUser
+          className={classes.backButton}
+        >
+          ← Back
+        </button>
+      )}
       <div>
         <Card
           fullName={selectedUser.fullName}
@@ -83,6 +121,7 @@ const ChatContainer = ({ selectedUser }) => {
                   : classes.receiverMessage
               }
               title={`${formattedDate} ${formattedTime}`} // Tooltip on hover
+              ref={messageRef}
             >
               {/* <time>
               {formattedDate} {formattedTime}

@@ -5,14 +5,13 @@ const cors = require("cors");
 const { expressjwt: jwt } = require("express-jwt");
 const { signup, login, logout } = require("./handlers/auth");
 
-const { updateProfile } = require("./handlers/account");
+const { updateProfile, findAccount } = require("./handlers/account");
 const {
   getUsersForSidebar,
   getMessages,
   sendMessage,
 } = require("./handlers/message");
-
-const app = express();
+const { app, server } = require("./lib/socket");
 
 app.use(express.json());
 app.use(
@@ -36,11 +35,11 @@ app.post("/api/login", login);
 app.post("/api/logout", logout);
 app.put("/api/update-profile", updateProfile);
 
-
 app.get("/api/get-users-for-sidebar", getUsersForSidebar);
-app.get("/api/:id", getMessages);
+app.get("/api/user/:id", getMessages);
 app.post("/api/send/:id", sendMessage);
+app.get("/api/find-account", findAccount);
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`server is up on port ${process.env.PORT}`);
 });

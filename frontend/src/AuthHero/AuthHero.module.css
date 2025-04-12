@@ -1,34 +1,39 @@
 .authHero {
-    text-align: center;
-    width: 50%;
-   
+  text-align: center;
+  width: 50%;
 }
 
-.iconContainer{ 
-    background-color: #0e1249;
-    width: fit-content;
-    margin: 10px auto;
-    padding: 10px 10px 5px 10px;
-    border-radius: 15px;
-    
+.iconContainer {
+  background-color: #0e1249;
+  width: fit-content;
+  margin: 10px auto;
+  padding: 10px 10px 5px 10px;
+  border-radius: 15px;
+  margin-bottom: 15px;
 }
 
 .authHeroIcon {
-    font-size: 35px;
-    color: white;
+  font-size: 35px;
+  color: white;
 }
 
 .title {
-    font-size: 30px;
-    letter-spacing: 1px;
-    color: #addfd0;
-    font-weight: 700;
+  font-size: 30px;
+  letter-spacing: 1px;
+  color: #addfd0;
+  font-weight: 700;
 }
 
 .description {
-    font-size: 18px;
-    margin: 8px auto 40px auto;
-    letter-spacing: 1px;
-    color: #addfd0;
-    font-weight: 500;
+  font-size: 18px;
+  margin: 7px auto 40px auto;
+  letter-spacing: 1px;
+  color: #addfd0;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 992px) {
+  .authHero {
+    width: 100%;
+  }
 }

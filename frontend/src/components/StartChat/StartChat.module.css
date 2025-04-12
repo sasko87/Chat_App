@@ -1,0 +1,28 @@
+.startChat {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.startChat h3 {
+  font-size: 68px;
+  color: #addfd0;
+}
+
+.chattingLogo {
+  font-size: 100px;
+  margin-bottom: 50px;
+  color: #addfd0;
+}
+
+@media screen and (max-width: 992px) {
+  .startChat h3 {
+    font-size: 50px;
+  }
+  .chattingLogo {
+    font-size: 80px;
+  }
+}

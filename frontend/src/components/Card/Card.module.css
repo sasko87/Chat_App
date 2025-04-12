@@ -15,8 +15,21 @@
   /* padding: 20px; */
 }
 
+.profileImageContainer {
+  position: relative;
+}
 .profileImageContainer img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+}
+
+.online {
+  width: 10px;
+  height: 10px;
+  background-color: green;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  right: 0;
 }

@@ -1,0 +1,10 @@
+.profilePictureInput {
+  display: none;
+}
+
+.profileImage {
+  background-color: #0e1249;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}

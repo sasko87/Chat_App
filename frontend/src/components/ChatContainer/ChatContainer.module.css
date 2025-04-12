@@ -1,20 +1,24 @@
 .chatContainer {
-  width: 78%;
-  padding: 0 20px;
+  width: 80%;
+  height: 100%;
+  padding: 0 10px;
   position: relative;
 }
 
 .sendMessageContainer {
   position: absolute;
-  width: 100%;
+  flex: 1;
   bottom: 15px;
+  right: 15px;
+  left: 15px;
+  display: flex;
+  align-items: center;
 }
 
 .sendMessageContainer input {
-  width: 75%;
+  width: 80%;
   padding: 12px;
   border-radius: 10px;
-  margin-top: 8px;
   outline: none;
   background-color: #5b5c85;
   color: #f6f1de;
@@ -31,7 +35,7 @@
   padding: 12px;
   cursor: pointer;
   border-radius: 10px;
-  margin-top: 30px;
+
   background-color: #8ab2a6;
   border: none;
   margin-left: 25px;
@@ -41,8 +45,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  justify-content: flex-end;
-  height: 70%;
+  margin: 5px auto;
+  height: 75%;
+  overflow: auto;
 }
 
 .senderMessage {
@@ -58,9 +63,36 @@
 .receiverMessage {
   background-color: #addfd0;
   color: #0e1249;
-  text-align: left;
+  align-self: baseline;
   font-size: 17px;
   margin: 5px;
   padding: 5px 20px;
   border-radius: 15px;
+}
+
+.backButton {
+  border: none;
+  border-radius: 15px;
+  padding: 4px 10px;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #8ab2a6;
+}
+
+@media screen and (max-width: 1200px) {
+  .chatContainer {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .chatContainer {
+    width: 60%;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  .chatContainer {
+    width: 100%;
+  }
 }
