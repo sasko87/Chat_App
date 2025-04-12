@@ -27,7 +27,7 @@ const HomePage = () => {
   const user = jwtDecode(token);
 
   const connectSocket = () => {
-    const socket = io("https://chat-app-server-wine.vercel.app/", {
+    const socket = io("http://localhost:3000", {
       query: {
         userId: user.id,
       },
@@ -42,15 +42,12 @@ const HomePage = () => {
   };
 
   const usersSidebar = async () => {
-    const res = await fetch(
-      "https://chat-app-server-wine.vercel.app/api/get-users-for-sidebar",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${Cookies.get("jwt")}`,
-        },
-      }
-    );
+    const res = await fetch("/api/get-users-for-sidebar", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+      },
+    });
 
     if (res.ok) {
       const data = await res.json();

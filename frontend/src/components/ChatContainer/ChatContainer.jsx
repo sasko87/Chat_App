@@ -14,15 +14,12 @@ const ChatContainer = ({ selectedUser, onBack }) => {
   const messageRef = useRef(null);
 
   const handleMessages = async () => {
-    const res = await fetch(
-      `https://chat-app-server-wine.vercel.app/api/user/${selectedUser._id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${Cookies.get("jwt")}`,
-        },
-      }
-    );
+    const res = await fetch(`/api/user/${selectedUser._id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+      },
+    });
     if (res.ok) {
       const data = await res.json();
       setMessages(data);
@@ -39,17 +36,14 @@ const ChatContainer = ({ selectedUser, onBack }) => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(
-        `https://chat-app-server-wine.vercel.app/api/send/${selectedUser._id}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${Cookies.get("jwt")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ text }),
-        }
-      );
+      const res = await fetch(`/api/send/${selectedUser._id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${Cookies.get("jwt")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
+      });
       if (res.ok) {
         setText("");
         handleMessages();
@@ -61,7 +55,7 @@ const ChatContainer = ({ selectedUser, onBack }) => {
 
   const subscribeToMessages = () => {
     if (!selectedUser) return;
-    const socket = io("https://chat-app-server-wine.vercel.app/", {
+    const socket = io("http://localhost:3000", {
       query: {
         userId: user.id,
       },
@@ -73,7 +67,7 @@ const ChatContainer = ({ selectedUser, onBack }) => {
   };
 
   const unsubscribeFromMessages = () => {
-    const socket = io("https://chat-app-server-wine.vercel.app/", {
+    const socket = io("http://localhost:3000", {
       query: {
         userId: user.id,
       },
