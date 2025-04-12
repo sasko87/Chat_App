@@ -17,7 +17,7 @@ const Profile = () => {
   const [message, setMessage] = useState();
 
   const fetchUserData = async () => {
-    const res = await fetch(`${process.env.FETCH_URL}/api/find-account`, {
+    const res = await fetch("/api/find-account", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ const Profile = () => {
   const updateProfile = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(`${process.env.FETCH_URL}/api/update-profile`, {
+    const res = await fetch("/api/update-profile", {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,

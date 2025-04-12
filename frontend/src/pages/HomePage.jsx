@@ -27,7 +27,7 @@ const HomePage = () => {
   const user = jwtDecode(token);
 
   const connectSocket = () => {
-    const socket = io(`${process.env.FETCH_URL}`, {
+    const socket = io("http://localhost:3000", {
       query: {
         userId: user.id,
       },
@@ -42,15 +42,12 @@ const HomePage = () => {
   };
 
   const usersSidebar = async () => {
-    const res = await fetch(
-      `${process.env.FETCH_URL}/api/get-users-for-sidebar`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${Cookies.get("jwt")}`,
-        },
-      }
-    );
+    const res = await fetch("/api/get-users-for-sidebar", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+      },
+    });
 
     if (res.ok) {
       const data = await res.json();

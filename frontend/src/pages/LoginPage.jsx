@@ -23,7 +23,7 @@ const LoginPage = () => {
     e.preventDefault();
     setMessage("");
     try {
-      const res = await fetch(`${process.env.FETCH_URL}`, {
+      const res = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
