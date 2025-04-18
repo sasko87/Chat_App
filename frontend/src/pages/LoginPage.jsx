@@ -7,6 +7,7 @@ import WelcomeContainer from "../components/WelcomeContainer/WelcomeContainer";
 import Container from "../components/Container/Container";
 import PasswordInput from "../components/PasswordInput/PasswordInput";
 import AlertMessage from "../components/AlertMessage/AlertMessage";
+import { FcCheckmark } from "react-icons/fc";
 // import { FaRegEyeSlash } from "react-icons/fa6";
 // import { FaRegEye } from "react-icons/fa6";
 
@@ -32,7 +33,11 @@ const LoginPage = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        setMessage(data.message);
+        setMessage(
+          <span>
+            <FcCheckmark /> {data.message}
+          </span>
+        );
 
         setTimeout(() => {
           navigate("/");

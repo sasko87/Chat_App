@@ -5,13 +5,18 @@ import { jwtDecode } from "jwt-decode";
 import Card from "../Card/Card";
 import { io } from "socket.io-client";
 import { useRef } from "react";
+import { CiImageOn } from "react-icons/ci";
+import Modal from "../Modal/Modal";
 
 const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
   const token = Cookies.get("jwt");
   const user = jwtDecode(token);
   const messageRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const handleMessages = async () => {
     const res = await fetch(`/api/user/${selectedUser._id}`, {
@@ -28,6 +33,7 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
 
   const handleSendMessage = async (e) => {
     if (e) e.preventDefault();
+
     try {
       const res = await fetch(`/api/send/${selectedUser._id}`, {
         method: "POST",
@@ -35,15 +41,26 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
           Authorization: `Bearer ${Cookies.get("jwt")}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, image: imagePreview }),
       });
       if (res.ok) {
         setText("");
         handleMessages();
+        setImagePreview("");
+        if (fileInputRef.current) fileInputRef.current.value = "";
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const subscribeToMessages = () => {
@@ -135,10 +152,20 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
               {/* <time>
               {formattedDate} {formattedTime}
             </time> */}
+              {message.image && (
+                <img
+                  src={message.image}
+                  className={classes.sentImage}
+                  onClick={() => setSelectedImage(message.image)}
+                  alt="Sent"
+                />
+              )}
               <p>{message.text}</p>
             </div>
           );
         })}
+
+        {imagePreview && <img src={imagePreview} />}
       </div>
 
       <div className={classes.sendMessageContainer}>
@@ -154,13 +181,35 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
             }
           }}
         />
+        <label htmlFor="sendImage">
+          <CiImageOn className={classes.sendImage} />
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          name="sendImage"
+          id="sendImage"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          className={classes.sendImageInput}
+        />
+
         <button
           onClick={handleSendMessage}
-          disabled={text === "" ? true : false}
+          disabled={text || imagePreview === "" ? true : false}
         >
           Send
         </button>
       </div>
+      {selectedImage && (
+        <Modal closeModal={() => setSelectedImage(null)}>
+          <img
+            src={selectedImage}
+            alt="Full view"
+            className={classes.modalImage}
+          />
+        </Modal>
+      )}
     </div>
   );
 };

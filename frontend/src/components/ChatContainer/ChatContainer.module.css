@@ -38,7 +38,6 @@
 
   background-color: #8ab2a6;
   border: none;
-  margin-left: 25px;
 }
 
 .messageContainer {
@@ -70,6 +69,16 @@
   border-radius: 15px;
 }
 
+.sendImage {
+  font-size: 40px;
+  margin: 0 15px;
+  color: #addfd0;
+  cursor: pointer;
+}
+
+.sendImageInput {
+  display: none;
+}
 .backButton {
   border: none;
   border-radius: 15px;
@@ -77,6 +86,15 @@
   margin-top: 10px;
   background: rgba(255, 255, 255, 0.2);
   color: #8ab2a6;
+}
+
+.sentImage {
+  width: 200px;
+  cursor: pointer;
+}
+
+.modalImage {
+  max-height: 100%;
 }
 
 @media screen and (max-width: 1200px) {
