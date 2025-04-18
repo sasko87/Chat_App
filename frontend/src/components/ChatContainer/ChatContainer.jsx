@@ -33,7 +33,7 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
 
   const handleSendMessage = async (e) => {
     if (e) e.preventDefault();
-
+    if (!text.trim() && !imagePreview) return;
     try {
       const res = await fetch(`/api/send/${selectedUser._id}`, {
         method: "POST",
@@ -101,7 +101,7 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
   }, [selectedUser._id]);
 
   useEffect(() => {
-    messageRef.current?.scrollIntoView({ behavior: "smooth" });
+    messageRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
   }, [messages]);
   return (
     <div className={classes.chatContainer}>
@@ -196,7 +196,7 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
 
         <button
           onClick={handleSendMessage}
-          disabled={text || imagePreview === "" ? true : false}
+          disabled={!text.trim() && !imagePreview}
         >
           Send
         </button>
