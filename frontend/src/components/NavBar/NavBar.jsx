@@ -62,55 +62,54 @@ const NavBar = () => {
       <div className={classes.logoContainer} onClick={() => navigate("/")}>
         <LuMessageSquare /> <span>Chatting</span>
       </div>
-      <div>
-        {!isLoggedIn && (
-          <>
-            <nav className={classes.nav}>
-              <ul className={classes.navItems}>
-                <li>
-                  <Link to="/login" className={classes.navLink}>
-                    Login
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/signup" className={classes.navLink}>
-                    Sign Up
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </>
-        )}
-      </div>
-      <div>
-        {isLoggedIn && (
-          <>
-            <nav className={classes.nav}>
-              <ul className={classes.navItems}>
-                <li>
-                  <Link to="/" className={classes.navLink}>
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/profile" className={classes.navLink}>
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/login"
-                    className={classes.navLink}
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </>
-        )}
-      </div>
+
+      {!isLoggedIn && (
+        <div>
+          <nav className={classes.nav}>
+            <ul className={classes.navItems}>
+              <li>
+                <Link to="/login" className={classes.navLink}>
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/signup" className={classes.navLink}>
+                  Sign Up
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      )}
+
+      {isLoggedIn && (
+        <div>
+          <nav className={classes.nav}>
+            <ul className={classes.navItems}>
+              <li>
+                <Link to="/" className={classes.navLink}>
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/profile" className={classes.navLink}>
+                  Profile
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/login"
+                  className={classes.navLink}
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      )}
+
       <div>
         {activeMobileNav ? (
           <IoMdClose

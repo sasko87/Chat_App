@@ -34,6 +34,10 @@
   border: none;
 }
 
+.form button:hover {
+  background-color: #789b90;
+}
+
 .form div {
   display: flex;
   flex-direction: column;

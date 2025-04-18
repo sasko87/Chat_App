@@ -17,6 +17,9 @@ const AuthHero = () => {
   } else if (location.pathname === "/forgot-password") {
     title = "Forgot Your Password?";
     description = "Enter your email to get new password";
+  } else if (location.pathname.startsWith("/reset-password")) {
+    title = "Reset your password";
+    description = "Reset your password to login to your account";
   }
 
   return (

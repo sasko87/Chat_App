@@ -10,7 +10,7 @@ const Profile = () => {
   const [userData, setUserData] = useState();
   const [selectedImage, setSelectecImage] = useState();
   const token = Cookie.get("jwt");
-  const [formData, setFormData] = useState({
+  const [formInfo, setFormInfo] = useState({
     currentPassword: "",
     newPassword: "",
   });
@@ -27,7 +27,7 @@ const Profile = () => {
     if (res.ok) {
       const data = await res.json();
 
-      setUserData(data);
+      setUserInfo(data);
     }
   };
 
@@ -71,14 +71,14 @@ const Profile = () => {
       },
       body: JSON.stringify({
         profilePicture: selectedImage,
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
+        currentPassword: formInfo.currentPassword,
+        newPassword: formInfo.newPassword,
       }),
     });
     const data = await res.json();
     if (res.ok) {
       setMessage(data.message);
-      setFormData({
+      setFormInfo({
         currentPassword: "",
         newPassword: "",
       });
@@ -127,13 +127,13 @@ const Profile = () => {
           label="Current Password"
           onChange={handleChange}
           name="currentPassword"
-          value={formData.currentPassword}
+          value={formInfo.currentPassword}
         />
         <PasswordInput
           label="New Password"
           onChange={handleChange}
           name="newPassword"
-          value={formData.newPassword}
+          value={formInfo.newPassword}
         />
         <button>Save Changes</button>
       </Form>

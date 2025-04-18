@@ -6,7 +6,7 @@ import Card from "../Card/Card";
 import { io } from "socket.io-client";
 import { useRef } from "react";
 
-const ChatContainer = ({ selectedUser, onBack }) => {
+const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const token = Cookies.get("jwt");
@@ -26,15 +26,8 @@ const ChatContainer = ({ selectedUser, onBack }) => {
     }
   };
 
-  useEffect(() => {
-    handleMessages();
-    subscribeToMessages();
-
-    return () => unsubscribeFromMessages();
-  }, [selectedUser._id]);
-
   const handleSendMessage = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     try {
       const res = await fetch(`/api/send/${selectedUser._id}`, {
         method: "POST",
@@ -55,11 +48,15 @@ const ChatContainer = ({ selectedUser, onBack }) => {
 
   const subscribeToMessages = () => {
     if (!selectedUser) return;
-    const socket = io("http://localhost:3000", {
-      query: {
-        userId: user.id,
-      },
-    });
+    const socket = io(
+      "http://localhost:3000",
+
+      {
+        query: {
+          userId: user.id,
+        },
+      }
+    );
     socket.on("newMessage", (newMessage) => {
       if (newMessage.senderId !== selectedUser._id) return;
       setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -67,13 +64,24 @@ const ChatContainer = ({ selectedUser, onBack }) => {
   };
 
   const unsubscribeFromMessages = () => {
-    const socket = io("http://localhost:3000", {
-      query: {
-        userId: user.id,
-      },
-    });
+    const socket = io(
+      "http://localhost:3000",
+
+      {
+        query: {
+          userId: user.id,
+        },
+      }
+    );
     socket.off("newMessage");
   };
+
+  useEffect(() => {
+    handleMessages();
+    subscribeToMessages();
+
+    return () => unsubscribeFromMessages();
+  }, [selectedUser._id]);
 
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -92,6 +100,7 @@ const ChatContainer = ({ selectedUser, onBack }) => {
         <Card
           fullName={selectedUser.fullName}
           img={selectedUser.profilePicture}
+          isOnline={onlineUsers.includes(selectedUser._id)}
         />
       </div>
       <div className={classes.messageContainer}>
@@ -139,6 +148,11 @@ const ChatContainer = ({ selectedUser, onBack }) => {
           id="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && text.trim() !== "") {
+              handleSendMessage(e);
+            }
+          }}
         />
         <button
           onClick={handleSendMessage}

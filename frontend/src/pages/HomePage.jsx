@@ -27,11 +27,15 @@ const HomePage = () => {
   const user = jwtDecode(token);
 
   const connectSocket = () => {
-    const socket = io("http://localhost:3000", {
-      query: {
-        userId: user.id,
-      },
-    });
+    const socket = io(
+      "http://localhost:3000",
+
+      {
+        query: {
+          userId: user.id,
+        },
+      }
+    );
     socket.on("connect", () => {
       setConnected(true);
     });
@@ -87,6 +91,7 @@ const HomePage = () => {
           <ChatContainer
             selectedUser={selectedUser}
             onBack={() => setSelectedUser(null)}
+            onlineUsers={onlineUsers}
           />
         ) : (
           screenWidth > 470 && <StartChat />

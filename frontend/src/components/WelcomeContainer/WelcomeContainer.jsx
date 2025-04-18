@@ -13,6 +13,24 @@ import { useLocation } from "react-router-dom";
 
 const WelcomeContainer = () => {
   const location = useLocation().pathname;
+
+  let title;
+  let description;
+
+  if (location === "/login") {
+    (title = "Welcome Back"),
+      (description =
+        "Sign in to continue your conversations and text your friends");
+  } else if (location === "/signup") {
+    title = "Create Account";
+    description = "Create your free account and start chatting with people";
+  } else if (location.startsWith("/reset-password")) {
+    title = "Reset your password";
+    description = "Reset your password to login to your account";
+  } else if (location.startsWith("/forgot-password")) {
+    title = "Forgot Your Password?";
+    description = "Enter your email to get new password";
+  }
   return (
     <div className={classes.welcomeContainer}>
       <div className={classes.gridContainer}>
@@ -45,12 +63,8 @@ const WelcomeContainer = () => {
         </div>
       </div>
       <div className={classes.textContainer}>
-        <h3>{location === "/login" ? "Welcome Back" : "Create Account"}</h3>
-        <p>
-          {location === "/login"
-            ? "Sign in to continue your conversations and text your friends"
-            : "Create your free account and start chatting with people"}
-        </p>
+        <h3>{title}</h3>
+        <p>{description}</p>
       </div>
     </div>
   );

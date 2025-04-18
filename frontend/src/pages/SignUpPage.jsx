@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AuthContainer from "../components/AuthContainer/AuthContainer";
 import Form from "../components/Form/Form";
 import AuthHero from "../AuthHero/AuthHero";
@@ -15,6 +15,7 @@ const SignUpPage = () => {
     email: "",
     password: "",
   });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,6 +28,23 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.fullName.includes(" ")) {
+      setMessage("Please enter your full name (name and surname).");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setMessage("Password must be at least 6 characters.");
+      return;
+    }
+
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
@@ -42,6 +60,8 @@ const SignUpPage = () => {
       }
     } catch (error) {
       console.log(error);
+      const errorData = await res.json();
+      setMessage(errorData.error);
     }
   };
 
