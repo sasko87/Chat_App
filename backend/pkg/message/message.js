@@ -18,6 +18,10 @@ const messageSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    read: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
@@ -33,4 +37,20 @@ const filteredMessages = async (filter) => {
   return await Message.find(filter);
 };
 
-module.exports = { createMessage, filteredMessages };
+const findUnreadMessages = async (filter) => {
+  return await Message.find(filter).distinct("senderId");
+};
+
+const updateAllUnreadMessages = async (receiverId, senderId, data) => {
+  return await Message.updateMany(
+    { receiverId: receiverId, senderId: senderId },
+    data
+  );
+};
+
+module.exports = {
+  createMessage,
+  filteredMessages,
+  findUnreadMessages,
+  updateAllUnreadMessages,
+};

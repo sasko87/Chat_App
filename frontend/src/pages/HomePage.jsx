@@ -13,8 +13,8 @@ const HomePage = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState();
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [connected, setConnected] = useState(false);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [unreadMessages, setUnreadMessages] = useState();
 
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
@@ -36,9 +36,6 @@ const HomePage = () => {
         },
       }
     );
-    socket.on("connect", () => {
-      setConnected(true);
-    });
 
     socket.on("getOnlineUsers", (userIds) => {
       setOnlineUsers(userIds);
@@ -60,43 +57,69 @@ const HomePage = () => {
     }
   };
 
+  const getUnreadMessages = async () => {
+    const unreadMessages = await fetch("/api/get-unread-messages", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+      },
+    });
+    if (unreadMessages.ok) {
+      const data = await unreadMessages.json();
+      setUnreadMessages(data);
+      usersSidebar();
+      console.log("unread", data);
+    }
+  };
+
   useEffect(() => {
     usersSidebar();
+    getUnreadMessages();
   }, []);
 
-  return (
-    <Container>
-      {(screenWidth > 470 || !selectedUser) && (
-        <Sidebar>
-          {[...users]
-            .sort((a, b) => {
-              const aOnline = onlineUsers.includes(a._id);
-              const bOnline = onlineUsers.includes(b._id);
-              return aOnline === bOnline ? 0 : aOnline ? -1 : 1;
-            })
-            .map((user) => (
-              <Card
-                isOnline={onlineUsers.includes(user._id)}
-                key={user._id}
-                img={user.profilePicture}
-                fullName={user.fullName}
-                onClick={() => setSelectedUser(user)}
-              />
-            ))}
-        </Sidebar>
-      )}
+  useEffect(() => {}, []);
 
-      {(screenWidth > 470 || selectedUser) &&
-        (selectedUser ? (
-          <ChatContainer
-            selectedUser={selectedUser}
-            onBack={() => setSelectedUser(null)}
-            onlineUsers={onlineUsers}
-          />
-        ) : (
-          screenWidth > 470 && <StartChat />
-        ))}
-    </Container>
+  return (
+    <>
+      <Container>
+        {(screenWidth > 470 || !selectedUser) && (
+          <Sidebar>
+            {[...users]
+              .sort((a, b) => {
+                const aOnline = onlineUsers.includes(a._id);
+                const bOnline = onlineUsers.includes(b._id);
+                return aOnline === bOnline ? 0 : aOnline ? -1 : 1;
+              })
+              .map((user) => (
+                <Card
+                  isOnline={onlineUsers.includes(user._id)}
+                  key={user._id}
+                  img={user.profilePicture}
+                  fullName={user.fullName}
+                  onClick={() => setSelectedUser(user)}
+                  style={{
+                    background:
+                      unreadMessages && unreadMessages.includes(user._id)
+                        ? "red"
+                        : "",
+                  }}
+                />
+              ))}
+          </Sidebar>
+        )}
+
+        {(screenWidth > 470 || selectedUser) &&
+          (selectedUser ? (
+            <ChatContainer
+              selectedUser={selectedUser}
+              onBack={() => setSelectedUser(null)}
+              onlineUsers={onlineUsers}
+            />
+          ) : (
+            screenWidth > 470 && <StartChat />
+          ))}
+      </Container>
+    </>
   );
 };
 

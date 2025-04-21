@@ -5,6 +5,7 @@ import classes from "./Profile.module.css";
 import Cookie from "js-cookie";
 import PasswordInput from "../PasswordInput/PasswordInput";
 import AlertMessage from "../AlertMessage/AlertMessage";
+import { MdOutlineCameraAlt } from "react-icons/md";
 
 const Profile = () => {
   const [userData, setUserData] = useState();
@@ -27,7 +28,7 @@ const Profile = () => {
     if (res.ok) {
       const data = await res.json();
 
-      setUserInfo(data);
+      setUserData(data);
     }
   };
 
@@ -96,16 +97,27 @@ const Profile = () => {
       return () => clearTimeout(timer); // cleanup
     }
   }, [message]);
+
+  let image;
+
+  if (selectedImage) {
+    image = selectedImage;
+  } else if (!userData || userData.profilePicture === "") {
+    image = "https://cdn-icons-png.flaticon.com/512/6596/6596121.png";
+  } else {
+    image = userData.profilePicture;
+  }
+
   if (!userData) return <div>Loading...</div>;
   return (
     <Container style={{ alignItems: "center", justifyContent: "center" }}>
       <Form onSubmit={updateProfile}>
-        <div>
+        <div style={{ position: "relative" }}>
           <label htmlFor="profilePicture" className={classes.profileImage}>
-            <img
-              src={userData.profilePicture || selectedImage}
-              className={classes.profileImage}
-            />
+            <img src={image} className={classes.profileImage} />
+            <div className={classes.cameraIconContainer}>
+              <MdOutlineCameraAlt className={classes.cameraIcon} />
+            </div>
           </label>
           <input
             type="file"

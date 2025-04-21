@@ -16,6 +16,8 @@ const {
   getUsersForSidebar,
   getMessages,
   sendMessage,
+  getUnreadMessages,
+  updateUnreadMessages,
 } = require("./handlers/message");
 const { app, server } = require("./lib/socket");
 
@@ -53,7 +55,9 @@ app.put(`/api/reset-password/:id/:token`, resetPassword);
 app.get("/api/get-users-for-sidebar", getUsersForSidebar);
 app.get("/api/user/:id", getMessages);
 app.post("/api/send/:id", sendMessage);
+app.get("/api/get-unread-messages", getUnreadMessages);
 app.get("/api/find-account", findAccount);
+app.put("/api/update-unread-messages", updateUnreadMessages);
 
 server.listen(process.env.PORT, () => {
   console.log(`server is up on port ${process.env.PORT}`);

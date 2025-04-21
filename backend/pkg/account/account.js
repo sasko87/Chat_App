@@ -17,7 +17,7 @@ const accoutSchema = new mongoose.Schema(
     },
     profilePicture: {
       type: String,
-      default: "",
+      default: "https://cdn-icons-png.flaticon.com/512/6596/6596121.png",
     },
   },
   { timestamps: true }

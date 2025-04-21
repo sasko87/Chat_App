@@ -26,6 +26,16 @@ const SignUpPage = () => {
     });
   };
 
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+      }, 5000); // 2 seconds
+
+      return () => clearTimeout(timer); // cleanup
+    }
+  }, [message]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -40,8 +50,8 @@ const SignUpPage = () => {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setMessage("Password must be at least 6 characters.");
+    if (formData.password.length < 8) {
+      setMessage("Password must be at least 8 characters.");
       return;
     }
 
@@ -51,12 +61,14 @@ const SignUpPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+      const data = await res.json();
       if (res.ok) {
-        const data = await res.json();
         setMessage(data.message);
         setTimeout(() => {
           navigate("/");
         }, 2000);
+      } else {
+        setMessage(data.error);
       }
     } catch (error) {
       console.log(error);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "../components/Form/Form";
 import AuthContainer from "../components/AuthContainer/AuthContainer";
 import AuthHero from "../AuthHero/AuthHero";
@@ -8,8 +8,6 @@ import Container from "../components/Container/Container";
 import PasswordInput from "../components/PasswordInput/PasswordInput";
 import AlertMessage from "../components/AlertMessage/AlertMessage";
 import { FcCheckmark } from "react-icons/fc";
-// import { FaRegEyeSlash } from "react-icons/fa6";
-// import { FaRegEye } from "react-icons/fa6";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -17,8 +15,17 @@ const LoginPage = () => {
     password: "",
   });
   const [message, setMessage] = useState("");
-  // const [visiblePassword, setVisiblePassword] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+      }, 5000); // 2 seconds
+
+      return () => clearTimeout(timer); // cleanup
+    }
+  }, [message]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -43,7 +50,7 @@ const LoginPage = () => {
           navigate("/");
         }, 2000);
       } else {
-        setMessage(data.message);
+        setMessage(data.error);
       }
     } catch (error) {
       setMessage(res.error);
@@ -83,54 +90,6 @@ const LoginPage = () => {
               message={message}
               name="password"
             />
-            {/* <div style={{ position: "relative" }}>
-              <label htmlFor="password">Password</label>
-              <input
-                type={!visiblePassword ? "text" : "password"}
-                name="password"
-                id="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {visiblePassword ? (
-                <FaRegEyeSlash
-                  style={{
-                    position: "absolute",
-                    right: 10,
-                    top: "22%",
-                    cursor: "pointer",
-                    color: "#8ab2a6",
-                  }}
-                  onClick={() => {
-                    setVisiblePassword((prevData) => !prevData);
-                  }}
-                />
-              ) : (
-                <FaRegEye
-                  style={{
-                    position: "absolute",
-                    right: 10,
-                    top: "22%",
-                    cursor: "pointer",
-                    color: "#8ab2a6",
-                  }}
-                  onClick={() => {
-                    setVisiblePassword((prevData) => !prevData);
-                  }}
-                />
-              )}
-              <Link
-                to="/forgot-password"
-                style={{
-                  textDecoration: "none",
-                  color: "#8ab2a6",
-                  textAlign: "right",
-                }}
-              >
-                Forgot Password
-              </Link>
-              {message && <AlertMessage>{message}</AlertMessage>}
-            </div> */}
             <button>Sign in</button>
             {message && <AlertMessage>{message}</AlertMessage>}
           </Form>

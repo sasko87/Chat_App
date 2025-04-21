@@ -6,6 +6,7 @@ import Cookie from "js-cookie";
 import AlertMessage from "../AlertMessage/AlertMessage";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdClose } from "react-icons/io";
+import { disconnectSocket } from "../../lib/socket";
 
 const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -110,59 +111,62 @@ const NavBar = () => {
         </div>
       )}
 
-      <div>
-        {activeMobileNav ? (
-          <IoMdClose
-            className={classes.hamburgerMenu}
-            onClick={handleMobileNav}
-          />
-        ) : (
-          <GiHamburgerMenu
-            className={classes.hamburgerMenu}
-            onClick={handleMobileNav}
-          />
-        )}
-      </div>
+      {activeMobileNav ? (
+        <IoMdClose
+          className={classes.hamburgerMenu}
+          onClick={handleMobileNav}
+        />
+      ) : (
+        <GiHamburgerMenu
+          className={classes.hamburgerMenu}
+          onClick={handleMobileNav}
+        />
+      )}
+
       {activeMobileNav && isLoggedIn && (
-        <nav className={classes.mobileNav}>
-          <ul className={classes.mobileNavItems}>
-            <li>
-              <Link to="/" className={classes.mobileNavLink}>
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/profile" className={classes.mobileNavLink}>
-                Profile
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/login"
-                className={classes.mobileNavLink}
-                onClick={handleLogout}
-              >
-                Logout
-              </Link>
-            </li>
-          </ul>
-        </nav>
+        <div>
+          <nav className={classes.mobileNav}>
+            <ul className={classes.mobileNavItems}>
+              <li>
+                <Link to="/" className={classes.mobileNavLink}>
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/profile" className={classes.mobileNavLink}>
+                  Profile
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/login"
+                  className={classes.mobileNavLink}
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
       )}
       {activeMobileNav && !isLoggedIn && (
-        <nav className={classes.mobileNav}>
-          <ul className={classes.mobileNavItems}>
-            <li>
-              <Link to="/login" className={classes.mobileNavLink}>
-                Login
-              </Link>
-            </li>
-            <li>
-              <Link to="/sign-up" className={classes.mobileNavLink}>
-                Sign Up
-              </Link>
-            </li>
-          </ul>
-        </nav>
+        <div>
+          <nav className={classes.mobileNav}>
+            <ul className={classes.mobileNavItems}>
+              <li>
+                <Link to="/login" className={classes.mobileNavLink}>
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/sign-up" className={classes.mobileNavLink}>
+                  Sign Up
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
       )}
       {message && <AlertMessage>{message}</AlertMessage>}
     </header>

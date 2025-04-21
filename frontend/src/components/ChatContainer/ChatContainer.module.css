@@ -2,51 +2,71 @@
   width: 80%;
   height: 100%;
   padding: 0 10px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.messageText {
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .sendMessageContainer {
-  position: absolute;
-  flex: 1;
-  bottom: 15px;
-  right: 15px;
-  left: 15px;
+  /* flex: 1; */
   display: flex;
   align-items: center;
+  margin: 10px 10px;
+  height: fit-content;
 }
 
-.sendMessageContainer input {
+.sendMessageContainer textarea {
   width: 80%;
-  padding: 12px;
+  padding: 10px;
   border-radius: 10px;
   outline: none;
   background-color: #5b5c85;
   color: #f6f1de;
   border: none;
+  font-size: 16px;
+  overflow: hidden;
+  resize: none;
 }
 
-.sendMessageContainer input:focus {
+.sendMessageContainer textarea:focus {
   outline: 1px solid #8ab2a6;
   border: none;
 }
 
+.sendMessageContainer textarea::placeholder {
+  color: #8ab2a6;
+  font-size: 14px;
+}
+
+.sendMessageContainer textarea:focus::placeholder {
+  color: transparent;
+}
+
 .sendMessageContainer button {
   width: 15%;
+  min-width: 60px;
   padding: 12px;
   cursor: pointer;
   border-radius: 10px;
-
   background-color: #8ab2a6;
   border: none;
+  text-align: center;
 }
 
 .messageContainer {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin: 5px auto;
-  height: 75%;
+  margin: 0;
+  height: 100%;
   overflow: auto;
+  overflow-x: hidden;
+  padding: 0 50px;
 }
 
 .senderMessage {
@@ -57,6 +77,7 @@
   margin: 5px;
   padding: 5px 20px;
   border-radius: 15px;
+  max-width: 70%;
 }
 
 .receiverMessage {
@@ -67,6 +88,11 @@
   margin: 5px;
   padding: 5px 20px;
   border-radius: 15px;
+  max-width: 70%;
+}
+
+.messageProfilePicture {
+  width: 30px;
 }
 
 .sendImage {
@@ -107,10 +133,18 @@
   .chatContainer {
     width: 60%;
   }
+  .messageContainer {
+    padding: 0 10px;
+  }
 }
 
 @media screen and (max-width: 470px) {
   .chatContainer {
     width: 100%;
+  }
+
+  .sendImage {
+    font-size: 35px;
+    margin: 0 10px;
   }
 }

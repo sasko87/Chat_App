@@ -1,7 +1,12 @@
 const cloudinaryy = require("../lib/cloudinary");
 const { getReceiverSocketId } = require("../lib/socket");
 const { filteredAccount } = require("../pkg/account/account");
-const { filteredMessages, createMessage } = require("../pkg/message/message");
+const {
+  filteredMessages,
+  createMessage,
+  findUnreadMessages,
+  updateAllUnreadMessages,
+} = require("../pkg/message/message");
 
 const { io } = require("../lib/socket");
 
@@ -36,6 +41,20 @@ const getMessages = async (req, res) => {
     res.status(200).send(message);
   } catch (error) {
     console.log(error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+};
+
+const getUnreadMessages = async (req, res) => {
+  try {
+    const unreadMessages = await findUnreadMessages({
+      receiverId: req.auth.id,
+      read: false,
+    });
+    res.status(200).send(unreadMessages);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Internal server error" });
   }
 };
 
@@ -69,4 +88,26 @@ const sendMessage = async (req, res) => {
   }
 };
 
-module.exports = { getUsersForSidebar, getMessages, sendMessage };
+const updateUnreadMessages = async (req, res) => {
+  const receiverId = req.auth.id;
+  const senderId = req.body.senderId;
+
+  const data = { read: req.body.read };
+  console.log(data);
+
+  const updatedMessages = await updateAllUnreadMessages(
+    receiverId,
+    senderId,
+    data
+  );
+
+  res.status(200).send(updatedMessages);
+};
+
+module.exports = {
+  getUsersForSidebar,
+  getMessages,
+  sendMessage,
+  getUnreadMessages,
+  updateUnreadMessages,
+};

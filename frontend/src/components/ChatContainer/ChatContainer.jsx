@@ -18,6 +18,24 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
   const fileInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  const readUnreadedMessages = async () => {
+    const response = await fetch("/api/update-unread-messages", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ senderId: selectedUser._id, read: true }),
+    });
+
+    if (response.ok) {
+      const updated = await response.json();
+      console.log("Updated messages:", updated);
+    } else {
+      console.error("Failed to mark messages as read");
+    }
+  };
+
   const handleMessages = async () => {
     const res = await fetch(`/api/user/${selectedUser._id}`, {
       method: "GET",
@@ -28,6 +46,7 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
     if (res.ok) {
       const data = await res.json();
       setMessages(data);
+      readUnreadedMessages();
     }
   };
 
@@ -47,8 +66,10 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
         setText("");
         handleMessages();
         setImagePreview("");
+
         if (fileInputRef.current) fileInputRef.current.value = "";
       }
+      readUnreadedMessages();
     } catch (error) {
       console.log(error);
     }
@@ -77,6 +98,7 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
     socket.on("newMessage", (newMessage) => {
       if (newMessage.senderId !== selectedUser._id) return;
       setMessages((prevMessages) => [...prevMessages, newMessage]);
+      readUnreadedMessages();
     });
   };
 
@@ -96,13 +118,13 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
   useEffect(() => {
     handleMessages();
     subscribeToMessages();
-
     return () => unsubscribeFromMessages();
   }, [selectedUser._id]);
 
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
   }, [messages]);
+
   return (
     <div className={classes.chatContainer}>
       {window.innerWidth < 470 && (
@@ -113,11 +135,12 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
           ← Back
         </button>
       )}
-      <div>
+      <div style={{ margin: "0", borderBottom: "1px solid black" }}>
         <Card
           fullName={selectedUser.fullName}
           img={selectedUser.profilePicture}
           isOnline={onlineUsers.includes(selectedUser._id)}
+          style={{ margin: "0" }}
         />
       </div>
       <div className={classes.messageContainer}>
@@ -160,7 +183,7 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
                   alt="Sent"
                 />
               )}
-              <p>{message.text}</p>
+              <p className={classes.messageText}>{message.text}</p>
             </div>
           );
         })}
@@ -169,7 +192,9 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
       </div>
 
       <div className={classes.sendMessageContainer}>
-        <input
+        <textarea
+          placeholder="Type your message..."
+          rows={1}
           type="text"
           name="text"
           id="text"

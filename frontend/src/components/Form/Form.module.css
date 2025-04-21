@@ -7,7 +7,8 @@
   gap: 20px;
 }
 
-.form input {
+.form input,
+.form textarea {
   width: 400px;
   padding: 12px;
   border-radius: 10px;

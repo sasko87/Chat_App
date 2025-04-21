@@ -14,7 +14,7 @@ const signup = async (req, res) => {
   try {
     const user = await getAccountByEmail(email);
     if (user) {
-      return res.status(400).send({ message: "Email already exists" });
+      return res.status(400).send({ error: "Email already exists" });
     }
 
     req.body.password = bcrypt.hashSync(password);
@@ -49,12 +49,12 @@ const login = async (req, res) => {
     const user = await getAccountByEmail(email);
 
     if (!user) {
-      return res.status(400).send({ message: "User does not exists" });
+      return res.status(400).send({ error: "User does not exists" });
     }
     const isPasswordCorrect = bcrypt.compareSync(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).send({ message: "Wrong password" });
+      return res.status(400).send({ error: "Wrong password" });
     }
 
     const payload = {
@@ -114,7 +114,7 @@ const forgotPassword = async (req, res) => {
   };
 
   const token = jwt.sign(payload, secret, { expiresIn: "60m" });
-  const link = `http://localhost:5173/reset-password/${user.id}/${token}`;
+  const link = `https://chat.stevkovski.xyz/reset-password/${user.id}/${token}`;
 
   console.log(link);
 
