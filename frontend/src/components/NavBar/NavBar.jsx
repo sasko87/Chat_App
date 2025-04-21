@@ -7,6 +7,11 @@ import AlertMessage from "../AlertMessage/AlertMessage";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdClose } from "react-icons/io";
 import { disconnectSocket } from "../../lib/socket";
+import { CgProfile } from "react-icons/cg";
+import { IoHomeOutline } from "react-icons/io5";
+import { AiOutlineLogout } from "react-icons/ai";
+import { RiLogoutCircleLine } from "react-icons/ri";
+import { IoIosPower } from "react-icons/io";
 
 const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,6 +43,7 @@ const NavBar = () => {
     if (res.ok) {
       const data = await res.json();
       setMessage(data.message);
+      disconnectSocket();
     }
   };
 
@@ -61,7 +67,7 @@ const NavBar = () => {
   return (
     <header className={classes.header}>
       <div className={classes.logoContainer} onClick={() => navigate("/")}>
-        <LuMessageSquare /> <span>Chatting</span>
+        <LuMessageSquare /> <span>ChatHub</span>
       </div>
 
       {!isLoggedIn && (
@@ -70,12 +76,12 @@ const NavBar = () => {
             <ul className={classes.navItems}>
               <li>
                 <Link to="/login" className={classes.navLink}>
-                  Login
+                  <AiOutlineLogout /> Login
                 </Link>
               </li>
               <li>
                 <Link to="/signup" className={classes.navLink}>
-                  Sign Up
+                  <IoIosPower /> Sign Up
                 </Link>
               </li>
             </ul>
@@ -87,14 +93,14 @@ const NavBar = () => {
         <div>
           <nav className={classes.nav}>
             <ul className={classes.navItems}>
-              <li>
+              <li className={classes.navItem}>
                 <Link to="/" className={classes.navLink}>
-                  Home
+                  <IoHomeOutline /> Home
                 </Link>
               </li>
-              <li>
+              <li className={classes.navItem}>
                 <Link to="/profile" className={classes.navLink}>
-                  Profile
+                  <CgProfile /> Profile
                 </Link>
               </li>
               <li>
@@ -103,7 +109,7 @@ const NavBar = () => {
                   className={classes.navLink}
                   onClick={handleLogout}
                 >
-                  Logout
+                  <RiLogoutCircleLine /> Logout
                 </Link>
               </li>
             </ul>

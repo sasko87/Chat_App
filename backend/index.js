@@ -11,6 +11,11 @@ const {
   resetPassword,
 } = require("./handlers/auth");
 
+const {
+  newNotification,
+  findNotifications,
+  deleteNotification,
+} = require("./handlers/notifications");
 const { updateProfile, findAccount } = require("./handlers/account");
 const {
   getUsersForSidebar,
@@ -19,6 +24,7 @@ const {
   getUnreadMessages,
   updateUnreadMessages,
 } = require("./handlers/message");
+
 const { app, server } = require("./lib/socket");
 
 app.use(express.json({ limit: "10mb" }));
@@ -58,6 +64,10 @@ app.post("/api/send/:id", sendMessage);
 app.get("/api/get-unread-messages", getUnreadMessages);
 app.get("/api/find-account", findAccount);
 app.put("/api/update-unread-messages", updateUnreadMessages);
+
+app.post("/api/new-notification", newNotification);
+app.get("/api/find-notifications", findNotifications);
+app.delete("/api/delete-notifications", deleteNotification);
 
 server.listen(process.env.PORT, () => {
   console.log(`server is up on port ${process.env.PORT}`);

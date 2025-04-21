@@ -31,6 +31,11 @@ io.on("connection", (socket) => {
   console.log("ova", onlineUsers);
 
   io.emit("getOnlineUsers", Object.keys(onlineUsers));
+
+  socket.on("sendNotification", ({ senderId, receiverId }) => {
+    io.to(receiverId).emit("getNotification", { senderId });
+  });
+
   socket.on("disconnect", () => {
     console.log("a user has disconeccted");
     delete onlineUsers[userId];

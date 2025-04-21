@@ -15,7 +15,10 @@ const HomePage = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [unreadMessages, setUnreadMessages] = useState();
-
+  const [socket, setSocket] = useState();
+  const [notifications, setNotifications] = useState([]);
+  const token = Cookies.get("jwt");
+  const user = jwtDecode(token);
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -23,24 +26,71 @@ const HomePage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const token = Cookies.get("jwt");
-  const user = jwtDecode(token);
+  useEffect(() => {
+    setSocket(
+      io(
+        "http://localhost:3000",
 
-  const connectSocket = () => {
-    const socket = io(
-      "http://localhost:3000",
-
-      {
-        query: {
-          userId: user.id,
-        },
-      }
+        {
+          query: {
+            userId: user.id,
+          },
+        }
+      )
     );
+  }, []);
 
-    socket.on("getOnlineUsers", (userIds) => {
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleGetOnlineUsers = (userIds) => {
       setOnlineUsers(userIds);
+    };
+
+    socket.on("getOnlineUsers", handleGetOnlineUsers);
+
+    // Clean up the event listener when component unmounts or socket changes
+    return () => {
+      socket.off("getOnlineUsers", handleGetOnlineUsers);
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNotification = (data) => {
+      setNotifications((prev) => [...prev, data]);
+    };
+
+    notifications && socket.on("getNotification", handleNotification);
+
+    return () => {
+      socket.off("getNotification", handleNotification);
+    };
+  }, [socket]);
+
+  // const connectSocket = () => {
+  //   const socket =
+  //   });
+  // };
+
+  const getNotifications = async () => {
+    const res = await fetch("/api/find-notifications", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+        "Content-Type": "application/json",
+      },
     });
+    if (res.ok) {
+      const data = await res.json();
+      setNotifications(data);
+    }
   };
+
+  useEffect(() => {
+    getNotifications();
+  }, []);
 
   const usersSidebar = async () => {
     const res = await fetch("/api/get-users-for-sidebar", {
@@ -53,7 +103,7 @@ const HomePage = () => {
     if (res.ok) {
       const data = await res.json();
       setUsers(data);
-      connectSocket();
+      // connectSocket();
     }
   };
 
@@ -77,18 +127,57 @@ const HomePage = () => {
     getUnreadMessages();
   }, []);
 
-  useEffect(() => {}, []);
-
   return (
     <>
       <Container>
         {(screenWidth > 470 || !selectedUser) && (
+          // <Sidebar>
+          //   {[...users]
+          //     .sort((a, b) => {
+          //       const aOnline = onlineUsers.includes(a._id);
+          //       const bOnline = onlineUsers.includes(b._id);
+          //       return aOnline === bOnline ? 0 : aOnline ? -1 : 1;
+          //     })
+          //     .map((user) => (
+          //       <Card
+          //         isOnline={onlineUsers.includes(user._id)}
+          //         key={user._id}
+          //         img={user.profilePicture}
+          //         fullName={user.fullName}
+          //         onClick={() => setSelectedUser(user)}
+          //         notifications={notifications}
+          //         style={{
+          //           background: notifications.some(
+          //             (notification) => notification.senderId === user._id
+          //           )
+          //             ? "gray"
+          //             : "transparent",
+          //         }}
+          //       />
+          //     ))}
+          // </Sidebar>
           <Sidebar>
             {[...users]
               .sort((a, b) => {
+                const aHasNotification = notifications.some(
+                  (n) => n.senderId === a._id
+                );
+                const bHasNotification = notifications.some(
+                  (n) => n.senderId === b._id
+                );
+
+                if (aHasNotification !== bHasNotification) {
+                  return aHasNotification ? -1 : 1;
+                }
+
                 const aOnline = onlineUsers.includes(a._id);
                 const bOnline = onlineUsers.includes(b._id);
-                return aOnline === bOnline ? 0 : aOnline ? -1 : 1;
+
+                if (aOnline !== bOnline) {
+                  return aOnline ? -1 : 1;
+                }
+
+                return 0; // if both are equal
               })
               .map((user) => (
                 <Card
@@ -97,11 +186,13 @@ const HomePage = () => {
                   img={user.profilePicture}
                   fullName={user.fullName}
                   onClick={() => setSelectedUser(user)}
+                  notifications={notifications}
                   style={{
-                    background:
-                      unreadMessages && unreadMessages.includes(user._id)
-                        ? "red"
-                        : "",
+                    background: notifications.some(
+                      (notification) => notification.senderId === user._id
+                    )
+                      ? "grey"
+                      : "transparent",
                   }}
                 />
               ))}
@@ -114,6 +205,9 @@ const HomePage = () => {
               selectedUser={selectedUser}
               onBack={() => setSelectedUser(null)}
               onlineUsers={onlineUsers}
+              socket={socket}
+              setNotifications={setNotifications}
+              unreadMessages={unreadMessages}
             />
           ) : (
             screenWidth > 470 && <StartChat />

@@ -1,7 +1,14 @@
 import React from "react";
 import classes from "./Card.module.css";
 
-const Card = ({ img, fullName, onClick, isOnline, ...props }) => {
+const Card = ({
+  img,
+  fullName,
+  onClick,
+  isOnline,
+  notifications,
+  ...props
+}) => {
   return (
     <div className={classes.card} onClick={onClick} {...props}>
       <div className={classes.profileImageContainer}>

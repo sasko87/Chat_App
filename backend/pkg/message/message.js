@@ -41,11 +41,8 @@ const findUnreadMessages = async (filter) => {
   return await Message.find(filter).distinct("senderId");
 };
 
-const updateAllUnreadMessages = async (receiverId, senderId, data) => {
-  return await Message.updateMany(
-    { receiverId: receiverId, senderId: senderId },
-    data
-  );
+const updateAllUnreadMessages = async (id, data) => {
+  return await Message.updateMany({ _id: id }, data);
 };
 
 module.exports = {

@@ -52,7 +52,7 @@ const findAccount = async (req, res) => {
     const getUser = await getAccountById(req.auth.id);
     return res.status(200).send(getUser);
   } catch (error) {
-    console.log(error);
+    return res.status(500).send({ error: "Something went wrong. Try again" });
   }
 };
 

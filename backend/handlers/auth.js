@@ -87,22 +87,12 @@ const logout = async (req, res) => {
   }
 };
 
-const checkAuth = (req, res) => {
-  try {
-    res.status(200).json(req.user);
-  } catch (error) {
-    console.log("Error in checkAuth controller", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
-  console.log(email);
   const user = await getAccountByEmail(email);
 
   if (!user) {
-    return res.status(400).send({ message: "User does not exist" });
+    return res.status(400).send({ error: "User does not exist" });
   }
 
   const secret = process.env.JWT_SECRET;
@@ -115,8 +105,6 @@ const forgotPassword = async (req, res) => {
 
   const token = jwt.sign(payload, secret, { expiresIn: "60m" });
   const link = `https://chat.stevkovski.xyz/reset-password/${user.id}/${token}`;
-
-  console.log(link);
 
   const htmlContent = `
   <p>Hello ${user.fullName},</p>
@@ -171,7 +159,6 @@ module.exports = {
   signup,
   login,
   logout,
-  checkAuth,
   forgotPassword,
   resetPassword,
 };

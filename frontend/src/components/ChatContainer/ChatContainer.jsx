@@ -8,7 +8,13 @@ import { useRef } from "react";
 import { CiImageOn } from "react-icons/ci";
 import Modal from "../Modal/Modal";
 
-const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
+const ChatContainer = ({
+  selectedUser,
+  onBack,
+  onlineUsers,
+  socket,
+  setNotifications,
+}) => {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
@@ -17,6 +23,26 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
   const messageRef = useRef(null);
   const fileInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  const deleteNotifications = async () => {
+    const senderId = selectedUser._id;
+    const response = await fetch(
+      `/api/delete-notifications?senderId=${senderId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      console.log("success");
+    } else {
+      console.error("Failed to delete notifications");
+    }
+  };
 
   const readUnreadedMessages = async () => {
     const response = await fetch("/api/update-unread-messages", {
@@ -31,24 +57,45 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
     if (response.ok) {
       const updated = await response.json();
       console.log("Updated messages:", updated);
+      deleteNotifications();
+      setNotifications([]);
     } else {
       console.error("Failed to mark messages as read");
     }
   };
 
-  const handleMessages = async () => {
-    const res = await fetch(`/api/user/${selectedUser._id}`, {
-      method: "GET",
+  const handleNotification = async () => {
+    const res = await fetch("/api/new-notification", {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${Cookies.get("jwt")}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({ senderId: user.id, receiverId: selectedUser._id }),
     });
     if (res.ok) {
       const data = await res.json();
-      setMessages(data);
-      readUnreadedMessages();
+      console.log("noti", data);
     }
   };
+
+  // const getNotifications = async () => {
+  //   const res = await fetch("/api/find-notifications", {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${Cookies.get("jwt")}`,
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+  //   if (res.ok) {
+  //     const data = await res.json();
+  //     setNotifications(data);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getNotifications();
+  // }, []);
 
   const handleSendMessage = async (e) => {
     if (e) e.preventDefault();
@@ -69,7 +116,11 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
 
         if (fileInputRef.current) fileInputRef.current.value = "";
       }
-      readUnreadedMessages();
+      socket.emit("sendNotification", {
+        senderId: user.id,
+        receiverId: selectedUser._id,
+      });
+      handleNotification();
     } catch (error) {
       console.log(error);
     }
@@ -86,15 +137,6 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
 
   const subscribeToMessages = () => {
     if (!selectedUser) return;
-    const socket = io(
-      "http://localhost:3000",
-
-      {
-        query: {
-          userId: user.id,
-        },
-      }
-    );
     socket.on("newMessage", (newMessage) => {
       if (newMessage.senderId !== selectedUser._id) return;
       setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -103,21 +145,28 @@ const ChatContainer = ({ selectedUser, onBack, onlineUsers }) => {
   };
 
   const unsubscribeFromMessages = () => {
-    const socket = io(
-      "http://localhost:3000",
-
-      {
-        query: {
-          userId: user.id,
-        },
-      }
-    );
     socket.off("newMessage");
   };
 
+  const handleMessages = async () => {
+    const res = await fetch(`/api/user/${selectedUser._id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setMessages(data);
+      readUnreadedMessages();
+      deleteNotifications();
+      setNotifications([]);
+    }
+  };
+
   useEffect(() => {
-    handleMessages();
     subscribeToMessages();
+    handleMessages();
     return () => unsubscribeFromMessages();
   }, [selectedUser._id]);
 

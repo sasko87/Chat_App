@@ -16,7 +16,7 @@ const getUsersForSidebar = async (req, res) => {
     const filteredUsers = await filteredAccount({ _id: { $ne: loggedUserId } });
     res.status(200).send(filteredUsers);
   } catch (error) {
-    console.log(error);
+    res.status(500).send({ message: "Internal server error" });
   }
 };
 
@@ -41,7 +41,7 @@ const getMessages = async (req, res) => {
     res.status(200).send(message);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Internal server error" });
+    res.status(500).send({ error: "Internal server error" });
   }
 };
 
@@ -54,7 +54,7 @@ const getUnreadMessages = async (req, res) => {
     res.status(200).send(unreadMessages);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Internal server error" });
+    res.status(500).send({ error: "Internal server error" });
   }
 };
 
@@ -80,11 +80,13 @@ const sendMessage = async (req, res) => {
 
     if (receiverSocketId) {
       io.to(receiverSocketId).emit("newMessage", newMessage);
+      io.to(receiverSocketId).emit("getNotification", { senderId });
     }
 
     res.status(201).send(newMessage);
   } catch (error) {
     console.log(error);
+    res.status(500).send({ error: "Internal server error" });
   }
 };
 
@@ -93,15 +95,22 @@ const updateUnreadMessages = async (req, res) => {
   const senderId = req.body.senderId;
 
   const data = { read: req.body.read };
-  console.log(data);
+  try {
+    const messages = await filteredMessages({
+      receiverId: receiverId,
+      senderId: senderId,
+      read: false,
+    });
 
-  const updatedMessages = await updateAllUnreadMessages(
-    receiverId,
-    senderId,
-    data
-  );
+    for (const message of messages) {
+      await updateAllUnreadMessages(message._id, { read: true });
+    }
 
-  res.status(200).send(updatedMessages);
+    res.status(200).send(messages);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error: "Internal server error" });
+  }
 };
 
 module.exports = {
