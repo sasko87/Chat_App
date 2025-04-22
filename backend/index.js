@@ -30,6 +30,7 @@ const { app, server } = require("./lib/socket");
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.set("view engine", "ejs");
 app.use(
   cors({
     origin: ["http://localhost:5173"],

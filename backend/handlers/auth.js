@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const ejs = require("ejs");
+const path = require("path");
 
 const {
   getAccountByEmail,
@@ -28,18 +30,19 @@ const sendVerificationMail = async (req, res) => {
     code: verificationCode,
     expiresAt,
   };
+  const templatePath = path.join(__dirname, "../views/verification-email.ejs");
 
-  const htmlContent = `
-  <p>Hello ${fullName},</p>
-  <p>Your verification code is: ${verificationCode}</p>
- 
-`;
+  const htmlContent = await ejs.renderFile(templatePath, {
+    fullName,
+    verificationCode,
+  });
 
   try {
     await sendMail({
       email: email,
       subject: "Your verification code for ChatHub",
-      message: htmlContent,
+
+      html: htmlContent,
     });
     return res.status(200).send({ message: "Verification code sent to email" });
   } catch (error) {
@@ -178,18 +181,17 @@ const forgotPassword = async (req, res) => {
   const token = jwt.sign(payload, secret, { expiresIn: "60m" });
   const link = `https://chat.stevkovski.xyz/reset-password/${user.id}/${token}`;
 
-  const htmlContent = `
-  <p>Hello ${user.fullName},</p>
-  <p>You requested a password reset. Click the link below to reset your password:</p>
-  <a href="${link}">Reset Password</a>
-  <p>This link will expire in 60 minutes.</p>
-`;
+  const templatePath = path.join(__dirname, "../views/forgot-password.ejs");
+
+  const htmlContent = await ejs.renderFile(templatePath, {
+    fullName: user.fullName,
+    link: link,
+  });
 
   try {
     await sendMail({
       email: email,
       subject: "Your password reset link for Chatting App",
-      message: htmlContent,
       html: htmlContent,
     });
     return res.status(200).send({

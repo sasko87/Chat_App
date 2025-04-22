@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Email</title>
+    <style>
+      .verification-code-container {
+        padding: 15px 30px;
+        background-color: rgb(216, 215, 215);
+        width: fit-content;
+      }
+
+      .verification-code {
+        font-size: 20px;
+        color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div>
+        <h1>Welcome to ChatHub</h1>
+        <p>Hello <%= fullName %></p>
+      </div>
+      <div>
+        <p>Your verification code is:</p>
+      </div>
+<div class="verification-code-container">
+      <p class="verification-code"><%= verificationCode %></p>
+    </div>
+  </body>
+</html>
