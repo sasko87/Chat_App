@@ -158,6 +158,7 @@ const HomePage = () => {
           // </Sidebar>
           <Sidebar>
             {[...users]
+              .filter((user) => user._id !== user.id) // ✅ filter out logged-in user
               .sort((a, b) => {
                 const aHasNotification = notifications.some(
                   (n) => n.senderId === a._id
@@ -177,7 +178,7 @@ const HomePage = () => {
                   return aOnline ? -1 : 1;
                 }
 
-                return 0; // if both are equal
+                return 0;
               })
               .map((user) => (
                 <Card
