@@ -193,7 +193,7 @@ const HomePage = () => {
                       (notification) => notification.senderId === user._id
                     )
                       ? "grey"
-                      : "transparent",
+                      : "",
                   }}
                 />
               ))}

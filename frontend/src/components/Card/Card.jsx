@@ -12,10 +12,7 @@ const Card = ({
   return (
     <div className={classes.card} onClick={onClick} {...props}>
       <div className={classes.profileImageContainer}>
-        <img
-          src={img || "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"}
-          alt=""
-        />
+        <img src={img} alt="" />
         {isOnline ? (
           <div className={classes.online}></div>
         ) : (

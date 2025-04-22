@@ -8,10 +8,9 @@
   color: #addfd0;
 }
 
-.card:hover,
-.card:active,
-.card:focus {
+.card:hover {
   background-color: #3e3f5b;
+
   /* padding: 20px; */
 }
 
