@@ -9,6 +9,7 @@ const {
   logout,
   forgotPassword,
   resetPassword,
+  sendVerificationMail,
 } = require("./handlers/auth");
 
 const {
@@ -47,6 +48,8 @@ app.use(
       "/api/register",
       "/api/signup",
       "/api/forgot-password",
+      `/api/reset-password/:id/:token`,
+      "/api/send-verification-mail",
     ],
   })
 );
@@ -57,6 +60,7 @@ app.post("/api/logout", logout);
 app.put("/api/update-profile", updateProfile);
 app.post("/api/forgot-password", forgotPassword);
 app.put(`/api/reset-password/:id/:token`, resetPassword);
+app.post("/api/send-verification-mail", sendVerificationMail);
 
 app.get("/api/get-users-for-sidebar", getUsersForSidebar);
 app.get("/api/user/:id", getMessages);

@@ -27,7 +27,6 @@ const NavBar = () => {
     };
 
     checkToken();
-
     const interval = setInterval(checkToken, 1000);
     return () => clearInterval(interval);
   }, []);

@@ -8,14 +8,86 @@ const {
   updateAccount,
 } = require("../pkg/account/account");
 const { sendMail } = require("./mailer");
+let verificationCodes = {};
+const sendVerificationMail = async (req, res) => {
+  const { email, fullName } = req.body;
+  const user = await getAccountByEmail(email);
+
+  console.log(user);
+
+  if (user) {
+    return res
+      .status(400)
+      .send({ error: "User with this email already exists" });
+  }
+
+  const verificationCode = Math.floor(100000 + Math.random() * 900000);
+  const expiresAt = Date.now() + 60 * 60 * 1000;
+
+  verificationCodes[email] = {
+    code: verificationCode,
+    expiresAt,
+  };
+
+  const htmlContent = `
+  <p>Hello ${fullName},</p>
+  <p>Your verification code is: ${verificationCode}</p>
+ 
+`;
+
+  try {
+    await sendMail({
+      email: email,
+      subject: "Your verification code for ChatHub",
+      message: htmlContent,
+    });
+    return res.status(200).send({ message: "Verification code sent to email" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error: "Failed to send verification code" });
+  }
+};
+
+// const verifyCode = async (req, res) => {
+//   const { email, code } = req.body;
+//   const savedEmail = verificationCodes[email];
+
+//   if (!savedEmail) {
+//     return res.status(400).send({ error: "No verification code found" });
+//   }
+
+//   if (Date.now() > record.expiresAt) {
+//     delete verificationCodes[email];
+//     return res.status(400).send({ error: "Verification code expired" });
+//   }
+
+//   if (code !== record.code) {
+//     return res.status(400).send({ error: "Incorrect verification code" });
+//   }
+
+//   delete verificationCodes[email];
+//   return res.status(200).send({ message: "Email verified successfully" });
+// };
 
 const signup = async (req, res) => {
-  const { fullName, email, password, profilePicture } = req.body;
+  const { email, password, code } = req.body;
   try {
-    const user = await getAccountByEmail(email);
-    if (user) {
-      return res.status(400).send({ error: "Email already exists" });
+    const savedEmail = verificationCodes[email];
+
+    if (!savedEmail) {
+      return res.status(400).send({ error: "No verification code found" });
     }
+
+    if (Date.now() > savedEmail.expiresAt) {
+      delete verificationCodes[email];
+      return res.status(400).send({ error: "Verification code expired" });
+    }
+
+    if (parseInt(code) !== savedEmail.code) {
+      return res.status(400).send({ error: "Incorrect verification code" });
+    }
+
+    delete verificationCodes[email];
 
     req.body.password = bcrypt.hashSync(password);
 
@@ -39,7 +111,7 @@ const signup = async (req, res) => {
 
     return res.status(200).send({ message: "Acccout successfuly created" });
   } catch (error) {
-    return res.status(500).send("Internal Server Error");
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 };
 const login = async (req, res) => {
@@ -116,6 +188,7 @@ const forgotPassword = async (req, res) => {
   try {
     await sendMail({
       email: email,
+      subject: "Your password reset link for Chatting App",
       message: htmlContent,
       html: htmlContent,
     });
@@ -161,4 +234,5 @@ module.exports = {
   logout,
   forgotPassword,
   resetPassword,
+  sendVerificationMail,
 };
