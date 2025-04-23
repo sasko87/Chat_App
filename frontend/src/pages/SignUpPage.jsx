@@ -18,6 +18,7 @@ const SignUpPage = () => {
 
   const [steps, setSteps] = useState({ stepOne: true, stepTwo: false });
   const [code, setCode] = useState();
+  const [timer, setTimer] = useState(30);
 
   const navigate = useNavigate();
 
@@ -30,12 +31,28 @@ const SignUpPage = () => {
   };
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      if (steps.stepOne === false && steps.stepTwo === true) {
+        setTimer((prev) => {
+          if (prev === 0) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timer, steps.stepOne, steps.stepTwo]);
+
+  useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
         setMessage("");
-      }, 5000); // 2 seconds
+      }, 5000);
 
-      return () => clearTimeout(timer); // cleanup
+      return () => clearTimeout(timer);
     }
   }, [message]);
 
@@ -69,20 +86,22 @@ const SignUpPage = () => {
 
   const handleVerificationMail = async (e) => {
     e.preventDefault();
-    if (!formData.fullName.includes(" ")) {
-      setMessage("Please enter your full name (name and surname).");
-      return;
-    }
+    if (steps.stepOne === true && steps.stepTwo === false) {
+      if (!formData.fullName.includes(" ")) {
+        setMessage("Please enter your full name (name and surname).");
+        return;
+      }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setMessage("Please enter a valid email address.");
-      return;
-    }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        setMessage("Please enter a valid email address.");
+        return;
+      }
 
-    if (formData.password.length < 8) {
-      setMessage("Password must be at least 8 characters.");
-      return;
+      if (formData.password.length < 8) {
+        setMessage("Password must be at least 8 characters.");
+        return;
+      }
     }
     try {
       const response = await fetch("/api/send-verification-mail", {
@@ -147,8 +166,16 @@ const SignUpPage = () => {
           )}
           {steps.stepTwo && (
             <>
-              <h4>Please enter the verification code sent to your email.</h4>
-              <div>
+              <h4 style={{ color: "#addfd0" }}>
+                Please enter the verification code sent to your email.
+              </h4>
+              <div
+                style={{
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 <label htmlFor="code">Verification Code</label>
                 <input
                   type="number"
@@ -157,7 +184,38 @@ const SignUpPage = () => {
                   onChange={(e) => setCode(e.target.value)}
                   value={code}
                 />
+                <div
+                  style={{
+                    width: "fit-content",
+                    alignSelf: "flex-end",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 15,
+                  }}
+                >
+                  <span style={{ color: "#addfd0", marginTop: 5 }}>
+                    {timer}
+                  </span>
+                  <button
+                    style={{
+                      width: "100%",
+                      fontSize: "10px",
+                      padding: "7px",
+                      marginTop: 5,
+                    }}
+                    disabled={timer === 0 ? false : true}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleVerificationMail(e);
+                      setTimer(30);
+                    }}
+                  >
+                    Resend
+                  </button>
+                </div>
               </div>
+
               {message && <AlertMessage>{message}</AlertMessage>}
               <button onClick={handleSubmit}>Verify</button>
             </>
