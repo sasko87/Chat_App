@@ -47,10 +47,10 @@
   display: none;
   position: absolute;
   height: 150px;
-  width: 200px;
+  width: 100%;
   top: 7%;
   right: 0;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.8);
   border-radius: 15px;
   z-index: 100;
 }
@@ -78,7 +78,9 @@
     display: none;
   }
   .mobileNav {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .hamburgerMenu {

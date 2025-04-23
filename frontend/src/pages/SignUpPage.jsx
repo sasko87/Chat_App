@@ -166,9 +166,19 @@ const SignUpPage = () => {
           )}
           {steps.stepTwo && (
             <>
-              <h4 style={{ color: "#addfd0" }}>
-                Please enter the verification code sent to your email.
-              </h4>
+              <div
+                style={{
+                  minWidth: 300,
+                  maxWidth: 500,
+                  width: "100%",
+                  textAlign: "center",
+                  marginBottom: 25,
+                }}
+              >
+                <h4 style={{ color: "#addfd0", width: "100%" }}>
+                  Please enter the verification code sent to your email.
+                </h4>
+              </div>
               <div
                 style={{
                   position: "relative",

@@ -165,7 +165,7 @@ const NavBar = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/sign-up" className={classes.mobileNavLink}>
+                <Link to="/signup" className={classes.mobileNavLink}>
                   Sign Up
                 </Link>
               </li>
