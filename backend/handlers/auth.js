@@ -114,7 +114,7 @@ const signup = async (req, res) => {
 
     return res.status(200).send({ message: "Acccout successfuly created" });
   } catch (error) {
-    return res.status(500).send({ message: "Internal Server Error" });
+    return res.status(500).send({ error: "Something went wrong. Try again" });
   }
 };
 const login = async (req, res) => {
@@ -147,7 +147,7 @@ const login = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({ error: "Internal Server Error" });
+    return res.status(500).send({ error: "Something went wrong. Try again" });
   }
 };
 const logout = async (req, res) => {
@@ -158,7 +158,7 @@ const logout = async (req, res) => {
     res.status(200).send({ message: "Logout successfuly" });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({ error: "Internal Server Error" });
+    return res.status(500).send({ error: "Something went wrong. Try again" });
   }
 };
 

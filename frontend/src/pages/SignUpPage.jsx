@@ -81,6 +81,9 @@ const SignUpPage = () => {
       }
     } catch (error) {
       console.log(error);
+      const errorData = await res.json();
+
+      setMessage(errorData.error);
     }
   };
 

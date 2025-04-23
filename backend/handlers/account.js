@@ -43,7 +43,7 @@ const updateProfile = async (req, res) => {
     res.status(200).send({ message: "Profile updated successfully" });
   } catch (error) {
     console.error("Error uploading profile image:", error);
-    res.status(500).send({ error: "Something went wrong" });
+    res.status(500).send({ error: "Something went wrong. Try again" });
   }
 };
 

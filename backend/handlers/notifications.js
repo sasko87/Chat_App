@@ -13,6 +13,7 @@ const newNotification = async (req, res) => {
     res.status(200).send(notification);
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ error: "Something went wrong. Try again" });
   }
 };
 
@@ -22,6 +23,7 @@ const findNotifications = async (req, res) => {
     res.status(200).send(notifications);
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ error: "Something went wrong. Try again" });
   }
 };
 
@@ -35,6 +37,7 @@ const deleteNotification = async (req, res) => {
     res.status(200).send(notifications);
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ error: "Something went wrong. Try again" });
   }
 };
 
